@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Prototype Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(240,253,244,0.9), rgba(232,245,233,0.9));
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            position: relative;
+            background: rgba(230, 245, 255, 0.7);
+            backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 24px;
+            color: #333;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.8);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-6px) scale(1.02) rotate(-1deg);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        /* Shimmer effect */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 80%);
+            transform: rotate(25deg) translate(-100%, -100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .card:hover::before {
+            opacity: 1;
+            animation: shimmer 1s forwards;
+        }
+        @keyframes shimmer {
+            0% { transform: rotate(25deg) translate(-100%, -100%); }
+            100% { transform: rotate(25deg) translate(100%, 100%); }
+        }
+        .card h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #222;
+            z-index: 1;
+        }
+        .card h2 .fas { margin-left: 8px; color: #e67e22; }
+        .card p {
+            margin: 6px 0;
+            font-weight: 500;
+            color: #444;
+            z-index: 1;
+        }
+        .btn {
+            position: relative;
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(230,126,34,0.1);
+            color: #e67e22;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 1;
+        }
+        .btn:hover { background: rgba(230,126,34,0.2); }
+        .details {
+            margin-top: 10px;
+            font-style: italic;
+            opacity: 0.9;
+            color: #555;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cricket Player Prototype Demo</h1>
+        <div id="playerCards" class="cards"></div>
+    </div>
+    <script>
+        function CricketPlayer(name, role, matchesPlayed) {
+            this.name = name;
+            this.role = role;
+            this.matchesPlayed = matchesPlayed;
+        }
+        CricketPlayer.prototype.setStats = function(runs, wickets) {
+            this.runs = runs;
+            this.wickets = wickets;
+        };
+        CricketPlayer.prototype.getDetails = function() {
+            return `${this.name} (${this.role}) - Matches: ${this.matchesPlayed}, Runs: ${this.runs}, Wickets: ${this.wickets}`;
+        };
+        const players = [
+            new CricketPlayer('Sachin Tendulkar', 'Batter', 463),
+            new CricketPlayer('Rahul Dravid', 'Batter', 344),
+            new CricketPlayer('Zaheer Khan', 'Bowler', 200)
+        ];
+        players[0].setStats(18426, 154);
+        players[1].setStats(10889, 0);
+        players[2].setStats(627, 282);
+        const container = document.getElementById('playerCards');
+        players.forEach(player => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <h2>${player.name} <i class="fas fa-cricket-bat-ball"></i></h2>
+                <p>Role: ${player.role}</p>
+                <p>Matches: ${player.matchesPlayed}</p>
+                <p>Runs: ${player.runs}</p>
+                <p>Wickets: ${player.wickets}</p>
+                <button class="btn">Show Details</button>
+                <p class="details"></p>
+            `;
+            const button = card.querySelector('.btn');
+            const details = card.querySelector('.details');
+            button.addEventListener('click', () => {
+                details.textContent = player.getDetails();
+            });
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
